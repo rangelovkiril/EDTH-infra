@@ -9,13 +9,23 @@ resource "exoscale_security_group" "nodes" {
 }
 
 resource "exoscale_security_group_rule" "kubelet" {
+  security_group_id      = exoscale_security_group.nodes.id
+  type                   = "INGRESS"
+  protocol               = "TCP"
+  user_security_group_id = exoscale_security_group.nodes.id
+  start_port             = 10250
+  end_port               = 10250
+  description            = "kubelet"
+}
+
+resource "exoscale_security_group_rule" "mqtt_nodeport" {
   security_group_id = exoscale_security_group.nodes.id
   type              = "INGRESS"
   protocol          = "TCP"
   cidr              = "0.0.0.0/0"
-  start_port        = 10250
-  end_port          = 10250
-  description       = "kubelet"
+  start_port        = 31883
+  end_port          = 31883
+  description       = "mqtt nlb nodeport"
 }
 
 resource "exoscale_security_group_rule" "calico_vxlan" {
