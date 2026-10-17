@@ -28,6 +28,16 @@ resource "exoscale_security_group_rule" "mqtt_nodeport" {
   description       = "mqtt nlb nodeport"
 }
 
+resource "exoscale_security_group_rule" "mqtts_nodeport" {
+  security_group_id = exoscale_security_group.nodes.id
+  type              = "INGRESS"
+  protocol          = "TCP"
+  cidr              = "0.0.0.0/0"
+  start_port        = 31884
+  end_port          = 31884
+  description       = "mqtts nlb nodeport"
+}
+
 resource "exoscale_security_group_rule" "calico_vxlan" {
   security_group_id      = exoscale_security_group.nodes.id
   type                   = "INGRESS"
