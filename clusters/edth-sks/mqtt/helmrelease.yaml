@@ -20,13 +20,21 @@ spec:
       EMQX_AUTHENTICATION__1__USER_ID_TYPE: username
       EMQX_AUTHENTICATION__1__BOOTSTRAP_FILE: /opt/emqx/users/users.csv
       EMQX_AUTHENTICATION__1__BOOTSTRAP_TYPE: plain
+      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CERTFILE: /opt/emqx/tls/tls.crt
+      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__KEYFILE: /opt/emqx/tls/tls.key
     extraVolumes:
       - name: users
         secret:
           secretName: emqx-users
+      - name: tls
+        secret:
+          secretName: emqx-tls
     extraVolumeMounts:
       - name: users
         mountPath: /opt/emqx/users
+        readOnly: true
+      - name: tls
+        mountPath: /opt/emqx/tls
         readOnly: true
     resources:
       requests:
