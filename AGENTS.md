@@ -20,7 +20,7 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 
 ## Rules
 
-- The repo is public. State, plans, kubeconfigs and `*.tfvars` are gitignored because they contain secrets; never commit them. Don't commit plaintext Secrets either; use SOPS or similar.
+- The repo is public. State, plans, kubeconfigs and `*.tfvars` are gitignored because they contain secrets; never commit them. Don't commit plaintext Secrets either: Kubernetes Secrets are encrypted with SOPS and age as `<name>.sops.yaml` (one Secret per file, rules in `.sops.yaml`, encrypted for the personal key `~/.config/sops/age/keys.txt` and the Flux key `fleet-ci.key`). The root Flux Kustomization decrypts them with the `sops-age` Secret in `flux-system`, which holds `fleet-ci.key` and was created directly in the cluster. Create one with `kubectl create secret generic ... --dry-run=client -o yaml | sops encrypt --filename-override <path>.sops.yaml /dev/stdin > <path>.sops.yaml`, edit with `sops <file>`, and never print decrypted values. Only `.sops.yaml` files with `ENC[...]` values may be committed.
 - Don't overwrite other contexts in `$KUBECONFIG`. The merge script backs up to `config.bak` first.
 - Always pass `--context edth-sks` to kubectl and flux when the active context may differ.
 - Keep code free of comments, matching the existing files. Run `tofu fmt` and `tofu validate` after changing `.tf` files.
