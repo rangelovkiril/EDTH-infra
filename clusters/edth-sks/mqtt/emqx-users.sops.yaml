@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+    users.csv: ENC[AES256_GCM,data:lWDsqykV/2+3ARfhCuelIzauiOHh6NnQTEdewy80thDCZ4GAW3mLhmOpuLs6JUYBhhqk88HTdOTyMSsnecLzHfkmnAccAyLBcRdfelvhi5VLqKU9V/UM6w==,iv:Rg9px3fgLKvOxCpKr7+57snDW86ehj0rFo1PsUs6++0=,tag:Q+UwxHAODgAoLq1AHM10rg==,type:str]
+kind: Secret
+metadata:
+    name: emqx-users
+    namespace: mqtt
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAxeW4wRlp1WVMxQXVhaS9q
+            K3BRVzVhaUNZVXp2cHNhbTBBbm15dmI5Q25NCjJBQ3l4eDY0QjFxeW1oaWFwa09W
+            NjVnMjdvcHVRNTNSK2ZRU2VVb3dRbG8KLS0tIFBDZHFNOWpPK29lc2dKM0dXMWF2
+            R0pXdGE5NzRxdVo4RWY2MlN4cWpvSFUKqmnI4zva8BDAuOmlG4oMLkJA1oOMNUB5
+            nTZ2YNF79GVFixmo+tJn/0xTG+j3lAQYE3lvxyiJit72JrR7ijtUrw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1aa4n35h4ptkqpvtre9ees6z82wsevxpr28ctu4dmzszqy9d6kd3sf4mtlr
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqQnF3dE1nN1h5UUM3VGhz
+            Y29ZcWxLWTZoTllobmxRRWs4ZFFnc2hjT1RvCjh6bm91dEtVTENOWHJBTXJOa3d2
+            UEw0T08wQy9NMVRUYkV0eXZISW1YeG8KLS0tIDE1U29rUlNpTkJvdmN6TEZTMm1r
+            RVFCdUowVldtZUczbThwbGdoVHVJTmcKOHROqR1OF9O0kTiNbkT5+KqQejP1SqWx
+            Y7AmGXcWgCRYWoYP6w7/EUSwJG5+ZDHyOkwFoVuw3MBMimt/h14jQw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1t97z3g9r4ysrupxjygd6cax2p5wffhe0klg9dj5vnw6cwkxhtp6q798ent
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-17T18:44:21Z"
+    mac: ENC[AES256_GCM,data:zDAyqlDkSMJmEjzd9p6g0F7urM4DEK40lUURssnoRs6oPBIYXuNY67P2ZNyeVgAVD7ILNLPnx3NhxZUvb88aMRLkZZfa5O5ck7BNGNk8zR16nshfFzGr4ijn5j5pBjCkkc6OgkDbifL5mH6IVkdi47ty5E+uumyfou4WB+iwvHA=,iv:AX00BpkYxEUSU5XsIXZB5RHAyZk7L5O+jSlNpyUu4ww=,tag:etXcAlNx+21mBxrcAMnPXA==,type:str]
+    version: 3.13.3
