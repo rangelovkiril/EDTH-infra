@@ -4,15 +4,15 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 
 ## Layout
 
-- `infra/sks/` – OpenTofu for the Exoscale SKS cluster (`bg-sof-1`, name `edth-sks`, local state).
-- `infra/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
+- `tofu/sks/` – OpenTofu for the Exoscale SKS cluster (`bg-sof-1`, name `edth-sks`, local state).
+- `tofu/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
 - `clusters/<name>/` – Flux manifests per cluster. `clusters/edth-sks` is the SKS cluster; the old `clusters/local-k0s` manifests were removed.
 - `infrastructure/<name>/` – manifests that need CRDs installed by a controller in `clusters/edth-sks` (issuers, certificates). Each is applied by its own Flux `Kustomization` file in `clusters/edth-sks/` with `retryInterval`, so the root Kustomization never fails on missing CRDs.
 
 ## Workflow
 
 - Cluster changes go through git: edit manifests under `clusters/edth-sks`, commit, push, and Flux reconciles. Don't `kubectl apply` by hand except to debug.
-- Infra changes go through OpenTofu in `infra/sks`. Always run `tofu plan` and show it before `tofu apply`; apply and destroy create or remove paid resources, so confirm first.
+- Infra changes go through OpenTofu in `tofu/sks`. Always run `tofu plan` and show it before `tofu apply`; apply and destroy create or remove paid resources, so confirm first.
 - Credentials: the Exoscale API key and secret live in `~/.config/exoscale/exoscale.toml`. Export them as `EXOSCALE_API_KEY` and `EXOSCALE_API_SECRET` for tofu. Never print them or write them into the repo.
 - Flux is installed from the committed manifests in `clusters/edth-sks/flux-system` (generated with `flux install --export`, so commits stay signed and conventional), not with `flux bootstrap`, which would commit as `Flux <>` unsigned. The GitRepository authenticates as a GitHub App (`provider: github`) through the `flux-system` Secret (`githubAppID`, `githubAppInstallationID`, `githubAppPrivateKey`), created directly in the cluster and never committed. The App files (`APP_ID`, `INSTALLATION_ID`, `CLIENT_SECRET`, `*.pem`) are gitignored.
 - The kubeconfig has a client certificate with a TTL (7 days). Renew it with `tofu apply`, then run `merge-kubeconfig.sh` again.
