@@ -13,7 +13,7 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - Cluster changes go through git: edit manifests under `clusters/edth-sks`, commit, push, and Flux reconciles. Don't `kubectl apply` by hand except to debug.
 - Infra changes go through OpenTofu in `infra/sks`. Always run `tofu plan` and show it before `tofu apply`; apply and destroy create or remove paid resources, so confirm first.
 - Credentials: the Exoscale API key and secret live in `~/.config/exoscale/exoscale.toml`. Export them as `EXOSCALE_API_KEY` and `EXOSCALE_API_SECRET` for tofu. Never print them or write them into the repo.
-- Flux is installed from the committed manifests in `clusters/edth-sks/flux-system` (generated with `flux install --export`, so commits stay signed and conventional), not with `flux bootstrap`, which would commit as `Flux <>` unsigned. The repo is public, so the GitRepository uses the https URL without a secret.
+- Flux is installed from the committed manifests in `clusters/edth-sks/flux-system` (generated with `flux install --export`, so commits stay signed and conventional), not with `flux bootstrap`, which would commit as `Flux <>` unsigned. The GitRepository authenticates as a GitHub App (`provider: github`) through the `flux-system` Secret (`githubAppID`, `githubAppInstallationID`, `githubAppPrivateKey`), created directly in the cluster and never committed. The App files (`APP_ID`, `INSTALLATION_ID`, `CLIENT_SECRET`, `*.pem`) are gitignored.
 - The kubeconfig has a client certificate with a TTL (7 days). Renew it with `tofu apply`, then run `merge-kubeconfig.sh` again.
 - Tear down with `tofu destroy` when the hackathon is over.
 
