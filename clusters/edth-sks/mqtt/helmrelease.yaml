@@ -13,6 +13,20 @@ spec:
     replicaCount: 1
     persistence:
       enabled: false
+    emqxConfig:
+      EMQX_AUTHENTICATION__1__MECHANISM: password_based
+      EMQX_AUTHENTICATION__1__BACKEND: built_in_database
+      EMQX_AUTHENTICATION__1__USER_ID_TYPE: username
+      EMQX_AUTHENTICATION__1__BOOTSTRAP_FILE: /opt/emqx/users/users.csv
+      EMQX_AUTHENTICATION__1__BOOTSTRAP_TYPE: plain
+    extraVolumes:
+      - name: users
+        secret:
+          secretName: emqx-users
+    extraVolumeMounts:
+      - name: users
+        mountPath: /opt/emqx/users
+        readOnly: true
     resources:
       requests:
         cpu: 250m
