@@ -18,14 +18,14 @@ resource "exoscale_security_group_rule" "kubelet" {
   description            = "kubelet"
 }
 
-resource "exoscale_security_group_rule" "mqtt_nodeport" {
+resource "exoscale_security_group_rule" "dashboard_nodeport" {
   security_group_id = exoscale_security_group.nodes.id
   type              = "INGRESS"
   protocol          = "TCP"
   cidr              = "0.0.0.0/0"
-  start_port        = 31883
-  end_port          = 31883
-  description       = "mqtt nlb nodeport"
+  start_port        = 31885
+  end_port          = 31885
+  description       = "dashboard nlb nodeport"
 }
 
 resource "exoscale_security_group_rule" "mqtts_nodeport" {
