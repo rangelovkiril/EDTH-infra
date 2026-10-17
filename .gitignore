@@ -6,3 +6,7 @@ crash.log
 tfplan
 *.tfplan
 kubeconfig*
+APP_ID
+INSTALLATION_ID
+CLIENT_SECRET
+*.pem
