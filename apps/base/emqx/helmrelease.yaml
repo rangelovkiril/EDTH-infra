@@ -22,6 +22,10 @@ spec:
       EMQX_AUTHENTICATION__1__BOOTSTRAP_TYPE: plain
       EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CERTFILE: /opt/emqx/tls/tls.crt
       EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__KEYFILE: /opt/emqx/tls/tls.key
+      EMQX_LISTENERS__TCP__DEFAULT__ENABLE: "false"
+      EMQX_DASHBOARD__LISTENERS__HTTPS__BIND: "18084"
+      EMQX_DASHBOARD__LISTENERS__HTTPS__SSL_OPTIONS__CERTFILE: /opt/emqx/tls/tls.crt
+      EMQX_DASHBOARD__LISTENERS__HTTPS__SSL_OPTIONS__KEYFILE: /opt/emqx/tls/tls.key
     extraVolumes:
       - name: users
         secret:

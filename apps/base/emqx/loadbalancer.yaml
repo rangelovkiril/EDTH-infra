@@ -9,13 +9,13 @@ spec:
     app.kubernetes.io/name: emqx
     app.kubernetes.io/instance: emqx
   ports:
-    - name: mqtt
-      protocol: TCP
-      port: 1883
-      targetPort: 1883
-      nodePort: 31883
     - name: mqtts
       protocol: TCP
       port: 8883
       targetPort: 8883
       nodePort: 31884
+    - name: dashboard
+      protocol: TCP
+      port: 443
+      targetPort: 18084
+      nodePort: 31885
