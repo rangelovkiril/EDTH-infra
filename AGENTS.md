@@ -8,7 +8,7 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - `tofu/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
 - `clusters/edth-sks/` – the Flux entry point: `flux-system/` (generated Flux install and sync) plus one Flux `Kustomization` per layer: `infra-controllers.yaml`, `infra-configs.yaml` (depends on `infra-controllers`) and `apps.yaml` (depends on `infra-configs`). It holds no workloads.
 - `infrastructure/controllers/{base,edth-sks}/` – controllers installed with Helm (cert-manager); `base/<name>` is cluster-agnostic, `edth-sks` is the overlay with cluster-specific files such as SOPS Secrets. `infra-controllers` uses `wait: true`.
-- `infrastructure/configs/edth-sks/` – resources that need the controllers' CRDs (ClusterIssuers).
+- `infrastructure/configs/` – resources that need the controllers' CRDs (ClusterIssuers).
 - `apps/{base,edth-sks}/<app>/` – workloads. `base/<app>` is the app, the `edth-sks` overlay adds cluster-specific resources (Certificate, SOPS Secrets). Currently `emqx` in namespace `emqx`.
 - A new layer or app is a directory plus a `kustomization.yaml` that lists its files explicitly.
 

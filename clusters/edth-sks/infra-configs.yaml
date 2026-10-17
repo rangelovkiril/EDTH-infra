@@ -8,7 +8,7 @@ spec:
     - name: infra-controllers
   interval: 10m
   retryInterval: 1m
-  path: ./infrastructure/configs/edth-sks
+  path: ./infrastructure/configs
   prune: true
   sourceRef:
     kind: GitRepository
