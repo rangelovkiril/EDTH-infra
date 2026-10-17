@@ -7,6 +7,7 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - `infra/sks/` – OpenTofu for the Exoscale SKS cluster (`bg-sof-1`, name `edth-sks`, local state).
 - `infra/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
 - `clusters/<name>/` – Flux manifests per cluster. `clusters/edth-sks` is the SKS cluster; the old `clusters/local-k0s` manifests were removed.
+- `infrastructure/<name>/` – manifests that need CRDs installed by a controller in `clusters/edth-sks` (issuers, certificates). Each is applied by its own Flux `Kustomization` file in `clusters/edth-sks/` with `retryInterval`, so the root Kustomization never fails on missing CRDs.
 
 ## Workflow
 
