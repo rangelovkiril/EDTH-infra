@@ -22,5 +22,6 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - The repo is public. State, plans, kubeconfigs and `*.tfvars` are gitignored because they contain secrets; never commit them. Don't commit plaintext Secrets either; use SOPS or similar.
 - Don't overwrite other contexts in `$KUBECONFIG`. The merge script backs up to `config.bak` first.
 - Always pass `--context edth-sks` to kubectl and flux when the active context may differ.
+- Commits follow Conventional Commits with a single-line message and no body (e.g. `feat(infra): add SKS cluster`).
 - Keep code free of comments, matching the existing files. Run `tofu fmt` and `tofu validate` after changing `.tf` files.
 - Pin versions explicitly (Kubernetes version, images, Helm charts) so reconciliation is reproducible.
