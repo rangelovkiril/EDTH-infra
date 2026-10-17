@@ -9,4 +9,4 @@ spec:
     - emqx.rangelov.dev
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-staging
+    name: letsencrypt-production
