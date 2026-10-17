@@ -6,12 +6,15 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 
 - `tofu/sks/` – OpenTofu for the Exoscale SKS cluster (`bg-sof-1`, name `edth-sks`, local state).
 - `tofu/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
-- `clusters/<name>/` – Flux manifests per cluster. `clusters/edth-sks` is the SKS cluster; the old `clusters/local-k0s` manifests were removed.
-- `infrastructure/<name>/` – manifests that need CRDs installed by a controller in `clusters/edth-sks` (issuers, certificates). Each is applied by its own Flux `Kustomization` file in `clusters/edth-sks/` with `retryInterval`, so the root Kustomization never fails on missing CRDs.
+- `clusters/edth-sks/` – the Flux entry point: `flux-system/` (generated Flux install and sync) plus one Flux `Kustomization` per layer: `infra-controllers.yaml`, `infra-configs.yaml` (depends on `infra-controllers`) and `apps.yaml` (depends on `infra-configs`). It holds no workloads.
+- `infrastructure/controllers/{base,edth-sks}/` – controllers installed with Helm (cert-manager); `base/<name>` is cluster-agnostic, `edth-sks` is the overlay with cluster-specific files such as SOPS Secrets. `infra-controllers` uses `wait: true`.
+- `infrastructure/configs/edth-sks/` – resources that need the controllers' CRDs (ClusterIssuers).
+- `apps/{base,edth-sks}/<app>/` – workloads. `base/<app>` is the app, the `edth-sks` overlay adds cluster-specific resources (Certificate, SOPS Secrets). Currently `emqx` in namespace `emqx`.
+- A new layer or app is a directory plus a `kustomization.yaml` that lists its files explicitly.
 
 ## Workflow
 
-- Cluster changes go through git: edit manifests under `clusters/edth-sks`, commit, push, and Flux reconciles. Don't `kubectl apply` by hand except to debug.
+- Cluster changes go through git: edit manifests under `apps` or `infrastructure`, commit, push, and Flux reconciles. Don't `kubectl apply` by hand except to debug.
 - Infra changes go through OpenTofu in `tofu/sks`. Always run `tofu plan` and show it before `tofu apply`; apply and destroy create or remove paid resources, so confirm first.
 - Credentials: the Exoscale API key and secret live in `~/.config/exoscale/exoscale.toml`. Export them as `EXOSCALE_API_KEY` and `EXOSCALE_API_SECRET` for tofu. Never print them or write them into the repo.
 - Flux is installed from the committed manifests in `clusters/edth-sks/flux-system` (generated with `flux install --export`, so commits stay signed and conventional), not with `flux bootstrap`, which would commit as `Flux <>` unsigned. The GitRepository authenticates as a GitHub App (`provider: github`) through the `flux-system` Secret (`githubAppID`, `githubAppInstallationID`, `githubAppPrivateKey`), created directly in the cluster and never committed. The App files (`APP_ID`, `INSTALLATION_ID`, `CLIENT_SECRET`, `*.pem`) are gitignored.
@@ -20,12 +23,12 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 
 ## Rules
 
-- The repo is public. State, plans, kubeconfigs and `*.tfvars` are gitignored because they contain secrets; never commit them. Don't commit plaintext Secrets either: Kubernetes Secrets are encrypted with SOPS and age as `<name>.sops.yaml` (one Secret per file, rules in `.sops.yaml`, encrypted for the personal key `~/.config/sops/age/keys.txt` and the Flux key `fleet-ci.key`). The root Flux Kustomization decrypts them with the `sops-age` Secret in `flux-system`, which holds `fleet-ci.key` and was created directly in the cluster. Create one with `kubectl create secret generic ... --dry-run=client -o yaml | sops encrypt --filename-override <path>.sops.yaml /dev/stdin > <path>.sops.yaml`, edit with `sops <file>`, and never print decrypted values. Only `.sops.yaml` files with `ENC[...]` values may be committed.
+- The repo is public. State, plans, kubeconfigs and `*.tfvars` are gitignored because they contain secrets; never commit them. Don't commit plaintext Secrets either: Kubernetes Secrets are encrypted with SOPS and age as `<name>.sops.yaml` (one Secret per file, rules in `.sops.yaml`, encrypted for the personal key `~/.config/sops/age/keys.txt` and the Flux key `fleet-ci.key`). The `infra-controllers` and `apps` Flux Kustomizations decrypt them (`decryption.provider: sops`) with the `sops-age` Secret in `flux-system`, which holds `fleet-ci.key` and was created directly in the cluster. Create one with `kubectl create secret generic ... --dry-run=client -o yaml | sops encrypt --filename-override <path>.sops.yaml /dev/stdin > <path>.sops.yaml`, edit with `sops <file>`, and never print decrypted values. Only `.sops.yaml` files with `ENC[...]` values may be committed.
 - Don't overwrite other contexts in `$KUBECONFIG`. The merge script backs up to `config.bak` first.
 - Always pass `--context edth-sks` to kubectl and flux when the active context may differ.
 - Keep code free of comments, matching the existing files. Run `tofu fmt` and `tofu validate` after changing `.tf` files.
 - Pin versions explicitly (Kubernetes version, images, Helm charts) so reconciliation is reproducible.
-- One resource per YAML file, no multi-document YAML (the generated `flux-system/gotk-*.yaml` are the only exception). For Helm, use separate files: `helmrepository.yaml`, `helmchart.yaml` and `helmrelease.yaml` (the release uses `chartRef` to the HelmChart), plus `namespace.yaml`, under `clusters/edth-sks/<app>/`.
+- One resource per YAML file, no multi-document YAML (the generated `flux-system/gotk-*.yaml` are the only exception). For Helm, use separate files: `helmrepository.yaml`, `helmchart.yaml` and `helmrelease.yaml` (the release uses `chartRef` to the HelmChart), plus `namespace.yaml`, in the app directory under `apps/base/<app>/` (or `infrastructure/controllers/base/<name>/`), listed in its `kustomization.yaml`.
 
 ## Commits
 
