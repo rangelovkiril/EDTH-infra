@@ -1,0 +1,14 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: cert-manager
+    namespace: cert-manager
+  values:
+    crds:
+      enabled: true
