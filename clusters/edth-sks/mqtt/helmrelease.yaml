@@ -11,6 +11,7 @@ spec:
     namespace: mqtt
   values:
     replicaCount: 1
+    envFromSecret: emqx-secrets
     persistence:
       enabled: false
     emqxConfig:
