@@ -24,6 +24,7 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - Always pass `--context edth-sks` to kubectl and flux when the active context may differ.
 - Keep code free of comments, matching the existing files. Run `tofu fmt` and `tofu validate` after changing `.tf` files.
 - Pin versions explicitly (Kubernetes version, images, Helm charts) so reconciliation is reproducible.
+- One resource per YAML file, no multi-document YAML (the generated `flux-system/gotk-*.yaml` are the only exception). For Helm, use separate files: `helmrepository.yaml`, `helmchart.yaml` and `helmrelease.yaml` (the release uses `chartRef` to the HelmChart), plus `namespace.yaml`, under `clusters/edth-sks/<app>/`.
 
 ## Commits
 
