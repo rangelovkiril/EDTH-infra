@@ -26,6 +26,26 @@ spec:
               value: emqx.rangelov.dev
             - name: MQTT_CLIENT_ID
               value: fusion
+            - name: ORIGIN
+              value: "42.652222,23.354722,600"
+            - name: RATE_HZ
+              value: "15"
+            - name: GATE_M
+              value: "0.5"
+            - name: CONFIRM_HITS
+              value: "4"
+            - name: TRACK_TIMEOUT_S
+              value: "0.8"
+            - name: FIX_SIGMA_M
+              value: "0.08"
+            - name: ACCEL_MPS2
+              value: "8"
+            - name: INITIAL_SPEED_MPS
+              value: "5"
+            - name: HORIZON_S
+              value: "0.3"
+            - name: CONF_SIGMA_M
+              value: "0.2"
           envFrom:
             - secretRef:
                 name: fusion-mqtt

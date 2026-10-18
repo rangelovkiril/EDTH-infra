@@ -12,7 +12,7 @@
   "liveNow": true,
   "refresh": "",
   "time": {
-    "from": "now-2m",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {},
@@ -97,12 +97,13 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 2,
       "type": "stat",
-      "title": "Altitude above origin",
+      "title": "Height above the cameras",
       "description": "",
       "gridPos": {
         "x": 3,
@@ -137,7 +138,7 @@
       "fieldConfig": {
         "defaults": {
           "unit": "lengthm",
-          "decimals": 1,
+          "decimals": 2,
           "color": {
             "mode": "thresholds"
           },
@@ -169,7 +170,8 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 3,
@@ -209,7 +211,7 @@
       "fieldConfig": {
         "defaults": {
           "unit": "velocityms",
-          "decimals": 1,
+          "decimals": 2,
           "color": {
             "mode": "thresholds"
           },
@@ -241,7 +243,8 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 4,
@@ -323,7 +326,8 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 5,
@@ -403,7 +407,8 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 6,
@@ -497,7 +502,8 @@
         "orientation": "auto",
         "showPercentChange": false,
         "wideLayout": true
-      }
+      },
+      "interval": "1s"
     },
     {
       "id": 15,
@@ -517,7 +523,7 @@
     {
       "id": 16,
       "type": "xychart",
-      "title": "Top view: east × north from origin (m)",
+      "title": "Top view: east × north from camera miget5 (m)",
       "gridPos": {
         "x": 0,
         "y": 14,
@@ -593,12 +599,13 @@
         "tooltip": {
           "mode": "single"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 9,
       "type": "xychart",
-      "title": "Side view: east × up from origin (m)",
+      "title": "Side view: east × up from camera miget5 (m)",
       "gridPos": {
         "x": 12,
         "y": 14,
@@ -674,7 +681,8 @@
         "tooltip": {
           "mode": "single"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 10,
@@ -786,7 +794,8 @@
         "tooltip": {
           "mode": "multi"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 11,
@@ -944,7 +953,8 @@
         "tooltip": {
           "mode": "multi"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 12,
@@ -1019,7 +1029,8 @@
         "tooltip": {
           "mode": "multi"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 13,
@@ -1108,7 +1119,8 @@
         "tooltip": {
           "mode": "multi"
         }
-      }
+      },
+      "interval": "200ms"
     },
     {
       "id": 14,
@@ -1210,7 +1222,8 @@
         "tooltip": {
           "mode": "multi"
         }
-      }
+      },
+      "interval": "1s"
     }
   ]
 }
