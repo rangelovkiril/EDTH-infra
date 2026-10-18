@@ -1,7 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../base/emqx
+  - namespace.yaml
+  - helmrepository.yaml
+  - helmchart.yaml
+  - helmrelease.yaml
+  - loadbalancer.yaml
   - certificate.yaml
   - emqx-users.sops.yaml
   - emqx-secrets.sops.yaml

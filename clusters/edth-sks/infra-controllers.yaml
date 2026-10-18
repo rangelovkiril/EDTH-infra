@@ -7,7 +7,7 @@ spec:
   interval: 10m
   retryInterval: 1m
   timeout: 5m
-  path: ./infrastructure/controllers/edth-sks
+  path: ./infrastructure/controllers
   prune: true
   wait: true
   sourceRef:
