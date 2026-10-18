@@ -500,13 +500,43 @@
       }
     },
     {
+      "id": 15,
+      "type": "text",
+      "title": "Camera rpi-1, detections drawn on (video relay, ~4 fps)",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 10
+      },
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"height:100%;display:flex;align-items:center;justify-content:center;background:#000\"><img src=\"https://video.rangelov.dev/view/rpi-1\" alt=\"rpi-1: no video yet\" style=\"max-width:100%;max-height:100%;object-fit:contain\"></div>"
+      }
+    },
+    {
+      "id": 16,
+      "type": "text",
+      "title": "Camera rpi-2, detections drawn on (video relay, ~4 fps)",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 10
+      },
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"height:100%;display:flex;align-items:center;justify-content:center;background:#000\"><img src=\"https://video.rangelov.dev/view/rpi-2\" alt=\"rpi-2: no video yet\" style=\"max-width:100%;max-height:100%;object-fit:contain\"></div>"
+      }
+    },
+    {
       "id": 7,
       "type": "geomap",
       "title": "Map: nodes (labelled), track coloured by confidence, prediction 1 s ahead (orange)",
       "description": "Track and prediction come from fusion/tracks; nodes from their own status",
       "gridPos": {
         "x": 0,
-        "y": 4,
+        "y": 14,
         "w": 14,
         "h": 16
       },
@@ -676,7 +706,7 @@
       "description": "Each point is where two nodes' rays cross, computed on the node with the larger id and checked by the broker (fixes/+). The track on the left is fusion smoothing these.",
       "gridPos": {
         "x": 14,
-        "y": 4,
+        "y": 14,
         "w": 10,
         "h": 8
       },
@@ -787,7 +817,7 @@
       "title": "Side view: east × up from origin (m)",
       "gridPos": {
         "x": 14,
-        "y": 12,
+        "y": 22,
         "w": 10,
         "h": 8
       },
@@ -869,7 +899,7 @@
       "description": "",
       "gridPos": {
         "x": 0,
-        "y": 20,
+        "y": 30,
         "w": 8,
         "h": 8
       },
@@ -981,7 +1011,7 @@
       "description": "",
       "gridPos": {
         "x": 8,
-        "y": 20,
+        "y": 30,
         "w": 8,
         "h": 8
       },
@@ -1139,7 +1169,7 @@
       "description": "How far apart the two rays pass: large means a camera's position or heading is off",
       "gridPos": {
         "x": 16,
-        "y": 20,
+        "y": 30,
         "w": 8,
         "h": 8
       },
@@ -1214,7 +1244,7 @@
       "description": "What each camera reports, before anything is combined",
       "gridPos": {
         "x": 0,
-        "y": 28,
+        "y": 38,
         "w": 12,
         "h": 8
       },
@@ -1303,7 +1333,7 @@
       "description": "",
       "gridPos": {
         "x": 12,
-        "y": 28,
+        "y": 38,
         "w": 12,
         "h": 8
       },
