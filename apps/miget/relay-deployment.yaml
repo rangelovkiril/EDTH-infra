@@ -21,6 +21,9 @@ spec:
         - name: relay
           image: ghcr.io/rangelovkiril/edth-fusion:sha-13779be
           command: ["python", "/relay/relay.py"]
+          env:
+            - name: PUSH_TOKENS
+              value: ""
           ports:
             - name: http
               containerPort: 8080

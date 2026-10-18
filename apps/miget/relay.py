@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import hashlib
+import hmac
 import logging
 import os
 import re
@@ -13,6 +14,9 @@ BROKER_TLS = os.environ.get("BROKER_TLS", "1") != "0"
 BROKER_TLS_NAME = os.environ.get("BROKER_TLS_NAME", "emqx.rangelov.dev")
 VIEW_FPS = float(os.environ.get("VIEW_FPS", "10"))
 PORT = int(os.environ.get("PORT", "8080"))
+PUSH_TOKENS = dict(
+    pair.split(":", 1) for pair in os.environ.get("PUSH_TOKENS", "").split(",") if ":" in pair
+)
 NODE_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 CONTENT_LENGTH_RE = re.compile(rb"content-length:\s*(\d+)", re.IGNORECASE)
 
@@ -101,13 +105,25 @@ async def respond(writer, status: str, ctype: str, body: bytes, extra: str = "")
     await writer.drain()
 
 
-async def push(node: str, reader, writer, headers: dict) -> None:
-    auth = headers.get("authorization", "")
-    user, password = "", ""
+def token_matches(node: str, token: str) -> bool:
+    expected = PUSH_TOKENS.get(node)
+    return bool(expected) and hmac.compare_digest(
+        hashlib.sha256(token.encode()).hexdigest(), expected
+    )
+
+
+async def authorised(node: str, auth: str) -> bool:
+    if auth.lower().startswith("bearer "):
+        return token_matches(node, auth[7:].strip())
     if auth.lower().startswith("basic "):
         user, _, password = base64.b64decode(auth[6:]).decode(errors="replace").partition(":")
-    if user != node or not await broker_accepts(user, password):
-        log.warning("event=push_denied node=%s user=%s", node, user)
+        return user == node and await broker_accepts(user, password)
+    return False
+
+
+async def push(node: str, reader, writer, headers: dict) -> None:
+    if not await authorised(node, headers.get("authorization", "")):
+        log.warning("event=push_denied node=%s", node)
         await respond(writer, "401 Unauthorized", "text/plain", b"use the node's MQTT credentials\n",
                       'WWW-Authenticate: Basic realm="edth"\r\n')
         return
