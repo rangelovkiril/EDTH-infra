@@ -33,7 +33,7 @@ spec:
             - name: GATE_M
               value: "0.5"
             - name: CONFIRM_HITS
-              value: "4"
+              value: "6"
             - name: TRACK_TIMEOUT_S
               value: "0.8"
             - name: FIX_SIGMA_M
