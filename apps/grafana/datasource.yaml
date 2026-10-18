@@ -4,6 +4,7 @@ metadata:
   name: mqtt
   namespace: grafana
 spec:
+  resyncPeriod: 1m
   instanceSelector:
     matchLabels:
       dashboards: grafana
