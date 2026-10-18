@@ -11,3 +11,10 @@ resources:
   - certificate.yaml
   - emqx-users.sops.yaml
   - emqx-secrets.sops.yaml
+configMapGenerator:
+  - name: emqx-rules
+    namespace: emqx
+    files:
+      - base.hocon
+generatorOptions:
+  disableNameSuffixHash: true

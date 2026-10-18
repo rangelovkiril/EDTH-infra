@@ -33,12 +33,19 @@ spec:
       - name: tls
         secret:
           secretName: emqx-tls
+      - name: rules
+        configMap:
+          name: emqx-rules
     extraVolumeMounts:
       - name: users
         mountPath: /opt/emqx/users
         readOnly: true
       - name: tls
         mountPath: /opt/emqx/tls
+        readOnly: true
+      - name: rules
+        mountPath: /opt/emqx/etc/base.hocon
+        subPath: base.hocon
         readOnly: true
     resources:
       requests:

@@ -1,0 +1,64 @@
+log {
+  file {}
+  console {}
+}
+rule_engine {
+  rules.rays {
+    sql = """
+      SELECT
+      payload.node as node, payload.t as t, payload.frame as frame, payload.conf as conf,
+      payload.lat * 0.017453292519943295 as phi, payload.lon * 0.017453292519943295 as lam,
+      payload.az * 0.017453292519943295 as azr, payload.el * 0.017453292519943295 as elr,
+      sin(phi) as sp, cos(phi) as cp, sin(lam) as sl, cos(lam) as cl,
+      6378137.0 / sqrt(1 - 0.00669437999014 * sp * sp) as nr,
+      (nr + payload.alt_m) * cp * cl as ox,
+      (nr + payload.alt_m) * cp * sl as oy,
+      (nr * (1 - 0.00669437999014) + payload.alt_m) * sp as oz,
+      sin(azr) * cos(elr) as de, cos(azr) * cos(elr) as dn, sin(elr) as du,
+      0 - sl * de - sp * cl * dn + cp * cl * du as dx,
+      cl * de - sp * sl * dn + cp * sl * du as dy,
+      cp * dn + sp * du as dz,
+      timestamp as ingest_ms, timestamp - payload.t * 1000 as latency_ms
+      FROM "nodes/+/detections"
+      WHERE payload.node = nth(2, split(topic, '/'))
+      and is_num(payload.lat) and is_num(payload.lon) and is_num(payload.alt_m)
+      and payload.az >= 0 and payload.az < 360 and payload.el >= -90 and payload.el <= 90
+      and payload.conf >= 0.3
+    """
+    actions = [
+      {
+        function = republish
+        args {
+          topic = "rays/${node}"
+          qos = 0
+          retain = false
+          payload = """{"node":"${node}","t":${t},"frame":${frame},"conf":${conf},"ox":${ox},"oy":${oy},"oz":${oz},"dx":${dx},"dy":${dy},"dz":${dz},"ingest_ms":${ingest_ms},"latency_ms":${latency_ms}}"""
+        }
+      }
+    ]
+  }
+  rules.fixes {
+    sql = """
+      SELECT
+      payload.node as node, payload.peer as peer, payload.t as t, payload.lat as lat,
+      payload.lon as lon, payload.alt_m as alt_m, payload.miss_m as miss_m,
+      payload.angle_deg as angle_deg, payload.range_m as range_m, payload.conf as conf,
+      timestamp as ingest_ms, timestamp - payload.t * 1000 as latency_ms
+      FROM "nodes/+/fixes"
+      WHERE payload.node = nth(2, split(topic, '/'))
+      and is_num(payload.lat) and is_num(payload.lon) and is_num(payload.alt_m)
+      and payload.miss_m <= 3 and payload.angle_deg >= 2 and payload.conf >= 0.1
+    """
+    actions = [
+      {
+        function = republish
+        args {
+          topic = "fixes/${node}"
+          qos = 0
+          retain = false
+          payload = """{"node":"${node}","peer":"${peer}","t":${t},"lat":${lat},"lon":${lon},"alt_m":${alt_m},"miss_m":${miss_m},"angle_deg":${angle_deg},"range_m":${range_m},"conf":${conf},"ingest_ms":${ingest_ms},"latency_ms":${latency_ms}}"""
+        }
+      }
+    ]
+  }
+}
