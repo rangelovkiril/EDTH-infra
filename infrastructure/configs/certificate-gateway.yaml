@@ -8,6 +8,7 @@ spec:
   dnsNames:
     - grafana.rangelov.dev
     - emqx.rangelov.dev
+    - video.rangelov.dev
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-production

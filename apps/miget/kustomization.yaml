@@ -4,3 +4,13 @@ resources:
   - fusion-mqtt.sops.yaml
   - namespace.yaml
   - fusion-deployment.yaml
+  - relay-deployment.yaml
+  - relay-service.yaml
+  - httproute.yaml
+configMapGenerator:
+  - name: video-relay
+    namespace: miget
+    files:
+      - relay.py
+generatorOptions:
+  disableNameSuffixHash: true
