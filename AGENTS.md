@@ -7,10 +7,12 @@ Infrastructure for the EDTH hackathon project. It is deliberately overkill for a
 - `tofu/sks/` – OpenTofu for the Exoscale SKS cluster (`bg-sof-1`, name `edth-sks`, local state).
 - `tofu/sks/scripts/merge-kubeconfig.sh` – merges the admin kubeconfig into `$KUBECONFIG` as context `edth-sks`.
 - `clusters/edth-sks/` – the Flux entry point: `flux-system/` (generated Flux install and sync) plus one Flux `Kustomization` per layer: `infra-controllers.yaml`, `infra-configs.yaml` (depends on `infra-controllers`) and `apps.yaml` (depends on `infra-configs`). It holds no workloads.
-- `infrastructure/controllers/{base,edth-sks}/` – controllers installed with Helm (cert-manager); `base/<name>` is cluster-agnostic, `edth-sks` is the overlay with cluster-specific files such as SOPS Secrets. `infra-controllers` uses `wait: true`.
-- `infrastructure/configs/` – resources that need the controllers' CRDs (ClusterIssuers).
-- `apps/{base,edth-sks}/<app>/` – workloads. `base/<app>` is the app, the `edth-sks` overlay adds cluster-specific resources (Certificate, SOPS Secrets). Currently `emqx` in namespace `emqx`.
+- There is one cluster and no staging, so there is no base/overlay split: each layer is flat.
+- `infrastructure/controllers/<name>/` – controllers installed with Helm: cert-manager, envoy-gateway (Gateway API, CRDs included), grafana-operator. `infra-controllers` uses `wait: true`.
+- `infrastructure/configs/` – resources that need the controllers' CRDs: ClusterIssuers, and the one way in: `EnvoyProxy` (the only LoadBalancer Service, `envoy-nlb`, with fixed nodePorts 31443 for HTTPS and 31883 for MQTTS that the security group opens), `GatewayClass`, `Gateway` `edth` (listeners `https` and `mqtts`) and its certificate.
+- `apps/<app>/` – workloads: `emqx` (MQTTS passed through by a TCPRoute to EMQX's own TLS; dashboard by an HTTPRoute; rule engine in `base.hocon`, mounted over the image's `etc/base.hocon`, so rules stay editable in the dashboard until the pod restarts: `rays` turns each detection into an ECEF ray on `rays/{id}`, `fixes` validates nodes' fixes onto `fixes/{id}`; see EDTH `docs/contract.md`), `grafana` (operator CRs; the dashboard JSON in `apps/grafana/dashboards/` is generated, keep the generator in sync), `miget` (fusion, the thin tracker from fixes to tracks).
 - A new layer or app is a directory plus a `kustomization.yaml` that lists its files explicitly.
+- `scripts/mqtt-app-users.sh` – (re)creates the MQTT users of in-cluster apps: new passwords in `users.csv` and in the apps' SOPS Secrets. EMQX reads `users.csv` at start, so restart it after Flux applies the change.
 
 ## Workflow
 
