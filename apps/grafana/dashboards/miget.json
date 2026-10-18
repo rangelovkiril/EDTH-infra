@@ -409,7 +409,7 @@
       "id": 6,
       "type": "stat",
       "title": "Broker latency by node",
-      "description": "Broker time minus capture time, per node: network delay plus clock offset. Rays pair only within 50 ms, so this should stay small and steady.",
+      "description": "Broker time minus capture time, per node: network delay plus clock offset. Rays pair only within 100 ms, so this should stay small and steady.",
       "gridPos": {
         "x": 20,
         "y": 0,
@@ -515,15 +515,14 @@
       }
     },
     {
-      "id": 7,
-      "type": "geomap",
-      "title": "Map: nodes (labelled), track coloured by confidence, prediction 1 s ahead (orange)",
-      "description": "Track and prediction come from fusion/tracks; nodes from their own status",
+      "id": 16,
+      "type": "xychart",
+      "title": "Top view: east × north from origin (m)",
       "gridPos": {
         "x": 0,
         "y": 14,
-        "w": 14,
-        "h": 16
+        "w": 12,
+        "h": 10
       },
       "datasource": {
         "type": "grafana-mqtt-datasource",
@@ -532,14 +531,6 @@
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "mqtt"
-          },
-          "topic": "nodes/+/status"
-        },
-        {
-          "refId": "B",
           "datasource": {
             "type": "grafana-mqtt-datasource",
             "uid": "mqtt"
@@ -549,250 +540,58 @@
       ],
       "transformations": [
         {
-          "id": "merge",
-          "options": {}
-        },
-        {
           "id": "convertFieldType",
           "options": {
             "conversions": [
               {
-                "targetField": "lat",
+                "targetField": "e",
                 "destinationType": "number"
               },
               {
-                "targetField": "lon",
-                "destinationType": "number"
-              },
-              {
-                "targetField": "pred_lat",
-                "destinationType": "number"
-              },
-              {
-                "targetField": "pred_lon",
-                "destinationType": "number"
-              },
-              {
-                "targetField": "conf",
+                "targetField": "n",
                 "destinationType": "number"
               }
             ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "includeByName": {
+              "e": true,
+              "n": true
+            }
           }
         }
       ],
       "fieldConfig": {
         "defaults": {
+          "unit": "lengthm",
           "color": {
-            "mode": "continuous-RdYlGr"
+            "mode": "fixed",
+            "fixedColor": "#FF9830"
           },
-          "min": 0,
-          "max": 1,
-          "unit": "percentunit"
+          "custom": {
+            "show": "points",
+            "pointSize": {
+              "fixed": 5
+            }
+          }
         },
         "overrides": []
       },
       "options": {
-        "view": {
-          "id": "coords",
-          "lat": 42.6573,
-          "lon": 23.3549,
-          "zoom": 18
-        },
-        "controls": {
-          "showZoom": true,
-          "mouseWheelZoom": true,
-          "showAttribution": true,
-          "showScale": true,
-          "showMeasure": true
-        },
-        "basemap": {
-          "type": "esri-xyz",
-          "name": "Satellite",
-          "config": {
-            "server": "world-imagery"
-          }
-        },
-        "layers": [
-          {
-            "type": "markers",
-            "name": "Nodes and track",
-            "location": {
-              "mode": "coords",
-              "latitude": "lat",
-              "longitude": "lon"
-            },
-            "config": {
-              "showLegend": false,
-              "style": {
-                "size": {
-                  "fixed": 7
-                },
-                "color": {
-                  "field": "conf",
-                  "fixed": "#5794F2"
-                },
-                "opacity": 0.9,
-                "symbol": {
-                  "mode": "fixed",
-                  "fixed": "img/icons/marker/circle.svg"
-                },
-                "text": {
-                  "mode": "field",
-                  "field": "node",
-                  "fixed": ""
-                },
-                "textConfig": {
-                  "fontSize": 14,
-                  "offsetX": 0,
-                  "offsetY": -16,
-                  "textAlign": "center",
-                  "textBaseline": "middle"
-                }
-              }
-            },
-            "tooltip": true
-          },
-          {
-            "type": "markers",
-            "name": "Prediction",
-            "location": {
-              "mode": "coords",
-              "latitude": "pred_lat",
-              "longitude": "pred_lon"
-            },
-            "config": {
-              "showLegend": false,
-              "style": {
-                "size": {
-                  "fixed": 4
-                },
-                "color": {
-                  "fixed": "#FF9830"
-                },
-                "opacity": 0.5,
-                "symbol": {
-                  "mode": "fixed",
-                  "fixed": "img/icons/marker/circle.svg"
-                }
-              }
-            },
-            "tooltip": true
-          }
+        "mapping": "auto",
+        "series": [
+          {}
         ],
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
         "tooltip": {
-          "mode": "details"
-        }
-      }
-    },
-    {
-      "id": 8,
-      "type": "geomap",
-      "title": "Fixes computed on the nodes, coloured by miss distance",
-      "description": "Each point is where two nodes' rays cross, computed on the node with the larger id and checked by the broker (fixes/+). The track on the left is fusion smoothing these.",
-      "gridPos": {
-        "x": 14,
-        "y": 14,
-        "w": 10,
-        "h": 8
-      },
-      "datasource": {
-        "type": "grafana-mqtt-datasource",
-        "uid": "mqtt"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "mqtt"
-          },
-          "topic": "fixes/+"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "targetField": "lat",
-                "destinationType": "number"
-              },
-              {
-                "targetField": "lon",
-                "destinationType": "number"
-              },
-              {
-                "targetField": "miss_m",
-                "destinationType": "number"
-              }
-            ]
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "min": 0,
-          "max": 2,
-          "unit": "lengthm"
-        },
-        "overrides": []
-      },
-      "options": {
-        "view": {
-          "id": "coords",
-          "lat": 42.6573,
-          "lon": 23.3549,
-          "zoom": 18
-        },
-        "controls": {
-          "showZoom": true,
-          "mouseWheelZoom": true,
-          "showAttribution": true,
-          "showScale": true,
-          "showMeasure": true
-        },
-        "basemap": {
-          "type": "esri-xyz",
-          "name": "Satellite",
-          "config": {
-            "server": "world-imagery"
-          }
-        },
-        "layers": [
-          {
-            "type": "markers",
-            "name": "Fixes",
-            "location": {
-              "mode": "coords",
-              "latitude": "lat",
-              "longitude": "lon"
-            },
-            "config": {
-              "showLegend": false,
-              "style": {
-                "size": {
-                  "fixed": 4
-                },
-                "color": {
-                  "field": "miss_m",
-                  "fixed": "#73BF69"
-                },
-                "opacity": 0.9,
-                "symbol": {
-                  "mode": "fixed",
-                  "fixed": "img/icons/marker/circle.svg"
-                }
-              }
-            },
-            "tooltip": true
-          }
-        ],
-        "tooltip": {
-          "mode": "details"
+          "mode": "single"
         }
       }
     },
@@ -801,10 +600,10 @@
       "type": "xychart",
       "title": "Side view: east × up from origin (m)",
       "gridPos": {
-        "x": 14,
-        "y": 22,
-        "w": 10,
-        "h": 8
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 10
       },
       "datasource": {
         "type": "grafana-mqtt-datasource",
@@ -884,7 +683,7 @@
       "description": "",
       "gridPos": {
         "x": 0,
-        "y": 30,
+        "y": 24,
         "w": 8,
         "h": 8
       },
@@ -996,7 +795,7 @@
       "description": "",
       "gridPos": {
         "x": 8,
-        "y": 30,
+        "y": 24,
         "w": 8,
         "h": 8
       },
@@ -1154,7 +953,7 @@
       "description": "How far apart the two rays pass: large means a camera's position or heading is off",
       "gridPos": {
         "x": 16,
-        "y": 30,
+        "y": 24,
         "w": 8,
         "h": 8
       },
@@ -1229,7 +1028,7 @@
       "description": "What each camera reports, before anything is combined",
       "gridPos": {
         "x": 0,
-        "y": 38,
+        "y": 32,
         "w": 12,
         "h": 8
       },
@@ -1318,7 +1117,7 @@
       "description": "",
       "gridPos": {
         "x": 12,
-        "y": 38,
+        "y": 32,
         "w": 12,
         "h": 8
       },
