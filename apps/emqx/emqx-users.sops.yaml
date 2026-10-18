@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-    users.csv: ENC[AES256_GCM,data:5o0S0A/VhBOY7KfAGmdLuSRb0Qtp3W2ML3ZycnpXYLKHHsc9w2NlgihLj7vWhSkDQ5M8sWMM+pc8CS1fevH/pjxmaxfe/2P/njsYllK+m8QW1QMo2rYXrw==,iv:8/yC45/7vASSPuaqnbxPU4LCAFGBl47cWhDfReLSUU0=,tag:5O7aUEuP3eKRtN0ejnbYZw==,type:str]
+    users.csv: ENC[AES256_GCM,data:OhCbMCMJoSj0dPWXP958NgUMb8p2Ch2D794gRLtpddjTDIvoAKLwxA+F92AWs+/xgWST6G90lCOTybtHh0p7neA49CKgZINHKsfceCsousQ6jE6EKFKRQqHw2an5bpkhpVHeB7dBOFGbvlvsaUzjL5iiCOYlBufwjPjNUNmGjiC9N3i4m+xN0rDjYTso8ISGGrnM1K3nRUaRpHYRhMH28w7l7/HDsAQWgKehvw1j0ve8KHyPscA6e9AMevTlf74VBMc5wUQik0KnpEyBHZG3NEnc0KU=,iv:lGL0MbxgdRUARJV0MTTrub73MltK2QbSpgra7SZijDI=,tag:MaE7w2SaQeg1oe+EjW0xeg==,type:str]
 kind: Secret
 metadata:
     name: emqx-users
@@ -26,6 +26,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1t97z3g9r4ysrupxjygd6cax2p5wffhe0klg9dj5vnw6cwkxhtp6q798ent
     encrypted_regex: ^(data|stringData)$
-    lastmodified: "2026-10-17T18:54:27Z"
-    mac: ENC[AES256_GCM,data:ChvhW5ieRKMYcY5yof+TQwnSGJkF1c/11ODUYgSS/sE2eEzmnhdW7rX8U03vGpx1+Hu0UPWIv6AXKYK/1oLcUmj3/P4uE0H9kxalFaQKrZzU1NNHaj8vmsNtq8p908tHxHfss8a109c++YGwvMENnSzVM91KebvJj2rLN0mtZwI=,iv:XiIgAzFlhKwOX0ctSPZxDXcV+YllrYqCIBMQCSecrn8=,tag:pHT/S98d/MFqDAakWQIj4A==,type:str]
+    lastmodified: "2026-10-18T04:02:39Z"
+    mac: ENC[AES256_GCM,data:kH0Yz2fpwX0FNgy5wyNj6+pCaq3De1Y+82oo1pDbjcmStmhP9r43Xtp6MReQzmwmNjorF3Ct1Vs46E3fruT7UQXl7rMLj7EKnhJoz2UdkjvcvhQLRBHxbFd9uOS0VKSeLS9UuE81G2Oxbu/86JtFPel4oAN5+1m2OtZ6UVGX2W4=,iv:9OERd2ze3nIVNoQnqdlzJb/bYIeQBmM7x17ItzGv6AE=,tag:dN5RFFwphf9XGyXaP3G8qw==,type:str]
     version: 3.13.3

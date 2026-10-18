@@ -1,0 +1,32 @@
+apiVersion: v1
+data:
+    MQTT_PASSWORD: ENC[AES256_GCM,data:8UFpqzmwUORZNcmM9HuKa+4UB31Wia0uGBcqrCO898yRgmPiCVjqSo+1auw=,iv:X41u9F2jRJXInS6SZLlROhB+FRK9mmmRCD5rGOBNBo4=,tag:fiaL+SQAT8W0LOZ/RxnuZQ==,type:str]
+    MQTT_USERNAME: ENC[AES256_GCM,data:ChPZwC1vxXg=,iv:XMZqXFcRQo/n00ySLHhuNdb1ZhMXEClM3UIdH7UdKis=,tag:E1i3VFGUIPPVIN1qMGyg2g==,type:str]
+kind: Secret
+metadata:
+    name: fusion-mqtt
+    namespace: miget
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhT0tHUVZELzJYTzE1SEEx
+            TUZCUCtCYlk2eXRIYldYbStHZUhuQjFqTjJFCktjVGMrTDBGS1o0RVNMRDJjMWhM
+            Tyt0aGpJY3NMTWVzMmlVZTc1QS9JZWcKLS0tIEt5eHRWRDhZTVdxeGFRSFdTWnp1
+            cGV6cTdxdit2UFFXVVRWNERHOFFzamsKuG7YO7GBKKN8ZGRLiRMtKiVXaLQCwWbf
+            aA8VnW8LudMEMe6VxjsKOv6E+c1BK0ojmjBHZTHc3bd8+/DzzPapgg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1aa4n35h4ptkqpvtre9ees6z82wsevxpr28ctu4dmzszqy9d6kd3sf4mtlr
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFTllTdTFJRUE2M3ZXbWZs
+            cjlXczY5R1orQkR5ZFFyUFdpUTFRQ0lVSVJZClMrMzdWN0RveHdRc1JVdmVtbUlh
+            U1RwU1FRZnM0RWFZWHlvcTZsYWRmenMKLS0tIGtOeWRiOFR1UXlPeDdiVTBoYm9J
+            eFZjMUJhRU9QZUdzNWV1Y21iMmErdmcK8Fl7tS4N67Rx9l/xhI/We2uCQwQZAqvO
+            jXs/dXt3DriGRxOWxkBbvO6f7H4/V5qvvkvQa8FWPXWbsYGios87Dw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1t97z3g9r4ysrupxjygd6cax2p5wffhe0klg9dj5vnw6cwkxhtp6q798ent
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-18T04:02:40Z"
+    mac: ENC[AES256_GCM,data:yfBzoDFhKOfc4ADDZuwxJ5q4O9AANtfQUv/YSQ9q7HK0dwGoOBvQbJsT1FOFyR9XhFpLyOuPKHw2w0dKU2S1+wuuy1VA/vAwCr5uOhW5WcgLVQQz1R9/MpkS9+x6ggW+JjgzzwRE7vvTh4zfPBYouSfXdeExP6S6NXLbsjz3/sw=,iv:Zm7GBB0BMmUtLS2utGgnhV9NqaIytRhrn6whWFXkGTg=,tag:3+ACFx79rGgrSY/7vV+f6g==,type:str]
+    version: 3.13.3

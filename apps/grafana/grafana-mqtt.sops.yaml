@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+    password: ENC[AES256_GCM,data:fxKGYCEY9FQyC0p2xtVL3ShYjMsujyhSm58OvTar04u3mJUjvJeaZn6iT+s=,iv:Akssuj84h7QP1tCZz8tIrkNZMl1OvfrouOZbeIwgznc=,tag:/Cy1fdQByyekGNWgGoGSMA==,type:str]
+kind: Secret
+metadata:
+    name: grafana-mqtt
+    namespace: grafana
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2SW5jVDI5Mi8zVnhwdU5J
+            aWlVbi94MVMrSE0rbVczTmRiR3FHaFRKcGo4CnVzSTIycU1NQTMrY1ZhcHJpa2dZ
+            OTBVZjhSWCtBNFoyaG4yTEprVThRWVEKLS0tIEpUbVZXMmpXTlVZVnBMeDRmM3hk
+            QmhLN3VtWks0TjhZSFBLa3VqQVJQMXMKOzPeKtOawMHX7RwsMm3TbkAqEB0voE1+
+            BqrQc+CtIoEtTpVaVl02UukSojQXpRtSMSir9ntulwqZxR0IdX0Gog==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1aa4n35h4ptkqpvtre9ees6z82wsevxpr28ctu4dmzszqy9d6kd3sf4mtlr
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBHazVwN0tkOW92RnI1RWhJ
+            c2ZGanlLVFBWclMrSWRjVHVUL01jQ0NHU1hVCmtUdmdhTEszb0NYaUtZVVJna2U2
+            WDdCejM5aC9MbEpHeTZMZ2taNEViaGMKLS0tIGg2RXhHSkRNcVlWQ1Y2YUNicjlC
+            Sk1yTUZleDc5SXlPYUZlc29sdXhJTUkKDuk20v3W9zxKTb1HzfgzgfB7cspGxBb3
+            aL093h3+K9/2crwZkV8hsNrIJu2yyXgWdXFCFnSk7ssLhCtv23P/3A==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1t97z3g9r4ysrupxjygd6cax2p5wffhe0klg9dj5vnw6cwkxhtp6q798ent
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-10-18T04:02:39Z"
+    mac: ENC[AES256_GCM,data:huFIglMT+ooP7cImLLqN8TfJdTIJIPcFZmSh2o7ls8RyX9e5vHGg3zVVwfo47blRn4tN1u1HxIa4yChsnRmAv45ikF37WEtzkisP9W4/RR5ZrlpELv5CY/g+IFmtWr+0TlcifXx1UP5ZACDUZ9zhn9WVqH+UutbN15Jf1euALZw=,iv:mm12UqwxSk0bRA5hNTUMIbn9/bohcCQ7woGOsQ/pGdI=,tag:ZihCKzhsnoSqY8Y+QUmbTg==,type:str]
+    version: 3.13.3
