@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-    users.csv: ENC[AES256_GCM,data:OhCbMCMJoSj0dPWXP958NgUMb8p2Ch2D794gRLtpddjTDIvoAKLwxA+F92AWs+/xgWST6G90lCOTybtHh0p7neA49CKgZINHKsfceCsousQ6jE6EKFKRQqHw2an5bpkhpVHeB7dBOFGbvlvsaUzjL5iiCOYlBufwjPjNUNmGjiC9N3i4m+xN0rDjYTso8ISGGrnM1K3nRUaRpHYRhMH28w7l7/HDsAQWgKehvw1j0ve8KHyPscA6e9AMevTlf74VBMc5wUQik0KnpEyBHZG3NEnc0KU=,iv:lGL0MbxgdRUARJV0MTTrub73MltK2QbSpgra7SZijDI=,tag:MaE7w2SaQeg1oe+EjW0xeg==,type:str]
+    users.csv: ENC[AES256_GCM,data:T7YSOvWRYJ/32wkKHAt0hfVUqHv+h2zkbhHo8rhx+ppuyj9xmTsy/XaX058SbHX09Kuy7XKBDa0ydCiKLpBvmxcckgiXULX9qFG/nQZw3P1USNwz3cbXVpCZRelnPMPo/Yuwtc6NDLnT0ygHcrGWR4jto1yd94r5ZnxSgMnFBXzWA8+Q/q+QUszO3ioYL1GnxutLVBSe/3YAfl5FioWHeSlQh/3Yte6sZlFyEkXV4eg2I8h2uRxvpFfyCw7IJw9I6BJWpTQDDgXxdbGDqaaQsZLvwUcpEVmjng9Tx3b0yInQTCrYC3ag4kC8Pz4EoJnxYefU/tUIVFFclFpGe6H8Dzvz3SsLmnc61HuQFFN7Sok=,iv:ICp8FnvFU2xvTd21CzbZJJIVKkrGiL5SHqhb0Q/9YU4=,tag:Rx2yyWMBKFYimlvv8yaUTg==,type:str]
 kind: Secret
 metadata:
     name: emqx-users
@@ -26,6 +26,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1t97z3g9r4ysrupxjygd6cax2p5wffhe0klg9dj5vnw6cwkxhtp6q798ent
     encrypted_regex: ^(data|stringData)$
-    lastmodified: "2026-10-18T04:02:39Z"
-    mac: ENC[AES256_GCM,data:kH0Yz2fpwX0FNgy5wyNj6+pCaq3De1Y+82oo1pDbjcmStmhP9r43Xtp6MReQzmwmNjorF3Ct1Vs46E3fruT7UQXl7rMLj7EKnhJoz2UdkjvcvhQLRBHxbFd9uOS0VKSeLS9UuE81G2Oxbu/86JtFPel4oAN5+1m2OtZ6UVGX2W4=,iv:9OERd2ze3nIVNoQnqdlzJb/bYIeQBmM7x17ItzGv6AE=,tag:dN5RFFwphf9XGyXaP3G8qw==,type:str]
+    lastmodified: "2026-10-18T05:42:18Z"
+    mac: ENC[AES256_GCM,data:kquBcd2BoiOz9d9czZpZI5kPTuMb6ZWJJQ0x15NpJqF+PoU83nAKWzagmwLCClZ76NbfhsA8xVhst2zbADN9fnWCcUCLURTAkFcVUvZR8iOWaT7CB3I5bbDeNjvSTikwxtKfulPeA9jQxDcCKSkT77ZrmUkGn/uVpSyEspxGUsA=,iv:c2cDPdYDrUgYi/kPk3WggHx9PUvZe1ReBk1DAoeAAes=,tag:odqVS8ImYouI8D2m+CkG3Q==,type:str]
     version: 3.13.3
