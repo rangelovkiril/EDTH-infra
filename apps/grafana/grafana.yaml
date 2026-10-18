@@ -17,3 +17,12 @@ spec:
       org_role: Viewer
     users:
       default_theme: dark
+  deployment:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: grafana
+              env:
+                - name: GF_PLUGINS_PREINSTALL_SYNC
+                  value: grafana-mqtt-datasource@1.3.8
