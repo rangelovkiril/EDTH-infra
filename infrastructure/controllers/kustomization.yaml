@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - cert-manager
   - envoy-gateway
+  - grafana-operator
   - cloudflare-api-token.sops.yaml

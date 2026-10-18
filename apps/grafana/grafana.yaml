@@ -1,0 +1,19 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: grafana
+  labels:
+    dashboards: grafana
+spec:
+  version: 13.2.4
+  config:
+    log:
+      mode: console
+    server:
+      root_url: https://grafana.rangelov.dev
+    auth.anonymous:
+      enabled: "true"
+      org_role: Viewer
+    users:
+      default_theme: dark

@@ -1,0 +1,30 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: mqtt
+  namespace: grafana
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  plugins:
+    - name: grafana-mqtt-datasource
+      version: 1.3.8
+  valuesFrom:
+    - targetPath: secureJsonData.password
+      valueFrom:
+        secretKeyRef:
+          name: grafana-mqtt
+          key: password
+  datasource:
+    name: MQTT
+    type: grafana-mqtt-datasource
+    uid: mqtt
+    access: proxy
+    isDefault: true
+    jsonData:
+      uri: tls://emqx.rangelov.dev:8883
+      username: grafana
+      clientID: grafana-edth
+    secureJsonData:
+      password: ${password}
