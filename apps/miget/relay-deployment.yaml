@@ -23,7 +23,7 @@ spec:
           command: ["python", "/relay/relay.py"]
           env:
             - name: PUSH_TOKENS
-              value: ""
+              value: rpi-1:f81fdecc25dbac98a4945d5dc45bd25b15d54f887f8a42521006210b8d4268f5
           ports:
             - name: http
               containerPort: 8080
