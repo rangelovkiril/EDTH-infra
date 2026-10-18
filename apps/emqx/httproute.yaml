@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: emqx-dashboard
+  namespace: emqx
+spec:
+  parentRefs:
+    - name: edth
+      namespace: envoy-gateway-system
+      sectionName: https
+  hostnames:
+    - emqx.rangelov.dev
+  rules:
+    - backendRefs:
+        - name: emqx
+          port: 18083

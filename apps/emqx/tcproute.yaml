@@ -1,0 +1,14 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: emqx-mqtts
+  namespace: emqx
+spec:
+  parentRefs:
+    - name: edth
+      namespace: envoy-gateway-system
+      sectionName: mqtts
+  rules:
+    - backendRefs:
+        - name: emqx
+          port: 8883

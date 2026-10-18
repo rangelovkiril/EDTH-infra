@@ -6,6 +6,8 @@ resources:
   - helmchart.yaml
   - helmrelease.yaml
   - loadbalancer.yaml
+  - tcproute.yaml
+  - httproute.yaml
   - certificate.yaml
   - emqx-users.sops.yaml
   - emqx-secrets.sops.yaml

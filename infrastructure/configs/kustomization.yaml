@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
   - clusterissuer-staging.yaml
   - clusterissuer-production.yaml
+  - envoyproxy.yaml
+  - gatewayclass.yaml
+  - gateway.yaml
+  - certificate-gateway.yaml

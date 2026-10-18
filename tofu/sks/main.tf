@@ -38,6 +38,26 @@ resource "exoscale_security_group_rule" "mqtts_nodeport" {
   description       = "mqtts nlb nodeport"
 }
 
+resource "exoscale_security_group_rule" "gateway_https_nodeport" {
+  security_group_id = exoscale_security_group.nodes.id
+  type              = "INGRESS"
+  protocol          = "TCP"
+  cidr              = "0.0.0.0/0"
+  start_port        = 31443
+  end_port          = 31443
+  description       = "envoy gateway https nlb nodeport"
+}
+
+resource "exoscale_security_group_rule" "gateway_mqtts_nodeport" {
+  security_group_id = exoscale_security_group.nodes.id
+  type              = "INGRESS"
+  protocol          = "TCP"
+  cidr              = "0.0.0.0/0"
+  start_port        = 31883
+  end_port          = 31883
+  description       = "envoy gateway mqtts nlb nodeport"
+}
+
 resource "exoscale_security_group_rule" "calico_vxlan" {
   security_group_id      = exoscale_security_group.nodes.id
   type                   = "INGRESS"
