@@ -1,7 +1,7 @@
 {
   "uid": "miget",
-  "title": "M.I.G.E.T. \u2014 passive sky watch",
-  "description": "Live from MQTT: camera bearings in, triangulated tracks out",
+  "title": "M.I.G.E.T. — passive sky watch",
+  "description": "Live from MQTT: nodes detect and triangulate, the broker validates, fusion tracks and predicts",
   "tags": [
     "miget",
     "edth"
@@ -78,7 +78,7 @@
               }
             ]
           },
-          "noValue": "\u2014"
+          "noValue": "—"
         },
         "overrides": []
       },
@@ -150,7 +150,7 @@
               }
             ]
           },
-          "noValue": "\u2014"
+          "noValue": "—"
         },
         "overrides": []
       },
@@ -222,7 +222,7 @@
               }
             ]
           },
-          "noValue": "\u2014"
+          "noValue": "—"
         },
         "overrides": []
       },
@@ -246,12 +246,12 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "Triangulation miss",
-      "description": "RMS distance between the fused point and the rays it came from: how well the cameras agree. Large means a camera's position or heading is off.",
+      "title": "Confidence",
+      "description": "Certainty (σ), evidence (fixes so far), freshness and the fixes' own confidence",
       "gridPos": {
         "x": 11,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 4
       },
       "datasource": {
@@ -273,14 +273,14 @@
           "id": "organize",
           "options": {
             "includeByName": {
-              "miss_m": true
+              "conf": true
             }
           }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "lengthm",
+          "unit": "percentunit",
           "decimals": 0,
           "color": {
             "mode": "thresholds"
@@ -289,20 +289,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 0.5
+                "value": 0.4
               },
               {
-                "color": "red",
-                "value": 2
+                "color": "green",
+                "value": 0.7
               }
             ]
           },
-          "noValue": "\u2014"
+          "noValue": "—",
+          "min": 0,
+          "max": 1
         },
         "overrides": []
       },
@@ -326,12 +328,12 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "Rays per second, by node",
-      "description": "Detections reaching fusion from each node that has reported its position",
+      "title": "Position σ",
+      "description": "1σ uncertainty of the filtered position",
       "gridPos": {
-        "x": 15,
+        "x": 16,
         "y": 0,
-        "w": 9,
+        "w": 4,
         "h": 4
       },
       "datasource": {
@@ -345,7 +347,87 @@
             "type": "grafana-mqtt-datasource",
             "uid": "mqtt"
           },
-          "topic": "fusion/nodes"
+          "topic": "fusion/tracks"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "includeByName": {
+              "sigma_m": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthm",
+          "decimals": 2,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "noValue": "—"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "showPercentChange": false,
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Broker latency by node",
+      "description": "Broker time minus capture time, per node: network delay plus clock offset. Rays pair only within 50 ms, so this should stay small and steady.",
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "mqtt"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "mqtt"
+          },
+          "topic": "rays/+"
         }
       ],
       "transformations": [
@@ -354,7 +436,7 @@
           "options": {
             "includeByName": {
               "node": true,
-              "rays_per_s": true
+              "latency_ms": true
             }
           }
         },
@@ -373,8 +455,7 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "displayName": "${__field.labels.node}",
-          "unit": "none",
+          "unit": "ms",
           "decimals": 0,
           "color": {
             "mode": "thresholds"
@@ -383,20 +464,21 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "green",
                 "value": null
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 50
               },
               {
-                "color": "green",
-                "value": 5
+                "color": "red",
+                "value": 200
               }
             ]
           },
-          "noValue": "no placed nodes"
+          "noValue": "—",
+          "displayName": "${__field.labels.node}"
         },
         "overrides": []
       },
@@ -408,18 +490,20 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "area",
-        "textMode": "value_and_name",
+        "textMode": "value",
         "justifyMode": "center",
         "orientation": "auto",
+        "showPercentChange": false,
         "wideLayout": true
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "type": "geomap",
-      "title": "Map: nodes (labelled) and fused track, coloured by height",
+      "title": "Map: nodes (labelled), track coloured by confidence, prediction 1 s ahead (orange)",
+      "description": "Track and prediction come from fusion/tracks; nodes from their own status",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -437,7 +521,7 @@
             "type": "grafana-mqtt-datasource",
             "uid": "mqtt"
           },
-          "topic": "fusion/tracks"
+          "topic": "nodes/+/status"
         },
         {
           "refId": "B",
@@ -445,7 +529,7 @@
             "type": "grafana-mqtt-datasource",
             "uid": "mqtt"
           },
-          "topic": "fusion/nodes"
+          "topic": "fusion/tracks"
         }
       ],
       "transformations": [
@@ -466,7 +550,15 @@
                 "destinationType": "number"
               },
               {
-                "targetField": "u",
+                "targetField": "pred_lat",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "pred_lon",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "conf",
                 "destinationType": "number"
               }
             ]
@@ -476,20 +568,20 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-BlYlRd"
+            "mode": "continuous-RdYlGr"
           },
           "min": 0,
-          "max": 30,
-          "unit": "lengthm"
+          "max": 1,
+          "unit": "percentunit"
         },
         "overrides": []
       },
       "options": {
         "view": {
           "id": "coords",
-          "lat": 42.66563,
-          "lon": 23.37425,
-          "zoom": 19
+          "lat": 42.6573,
+          "lon": 23.3549,
+          "zoom": 18
         },
         "controls": {
           "showZoom": true,
@@ -515,13 +607,13 @@
               "longitude": "lon"
             },
             "config": {
-              "showLegend": true,
+              "showLegend": false,
               "style": {
                 "size": {
-                  "fixed": 6
+                  "fixed": 7
                 },
                 "color": {
-                  "field": "u",
+                  "field": "conf",
                   "fixed": "#5794F2"
                 },
                 "opacity": 0.9,
@@ -544,6 +636,32 @@
               }
             },
             "tooltip": true
+          },
+          {
+            "type": "markers",
+            "name": "Prediction",
+            "location": {
+              "mode": "coords",
+              "latitude": "pred_lat",
+              "longitude": "pred_lon"
+            },
+            "config": {
+              "showLegend": false,
+              "style": {
+                "size": {
+                  "fixed": 4
+                },
+                "color": {
+                  "fixed": "#FF9830"
+                },
+                "opacity": 0.5,
+                "symbol": {
+                  "mode": "fixed",
+                  "fixed": "img/icons/marker/circle.svg"
+                }
+              }
+            },
+            "tooltip": true
           }
         ],
         "tooltip": {
@@ -552,9 +670,10 @@
       }
     },
     {
-      "id": 7,
-      "type": "xychart",
-      "title": "Top view: east \u00d7 north from origin (m)",
+      "id": 8,
+      "type": "geomap",
+      "title": "Fixes computed on the nodes, coloured by miss distance",
+      "description": "Each point is where two nodes' rays cross, computed on the node with the larger id and checked by the broker (fixes/+). The track on the left is fusion smoothing these.",
       "gridPos": {
         "x": 14,
         "y": 4,
@@ -572,83 +691,100 @@
             "type": "grafana-mqtt-datasource",
             "uid": "mqtt"
           },
-          "topic": "fusion/tracks"
-        },
-        {
-          "refId": "B",
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "mqtt"
-          },
-          "topic": "fusion/nodes"
+          "topic": "fixes/+"
         }
       ],
       "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
         {
           "id": "convertFieldType",
           "options": {
             "conversions": [
               {
-                "targetField": "e",
+                "targetField": "lat",
                 "destinationType": "number"
               },
               {
-                "targetField": "n",
+                "targetField": "lon",
+                "destinationType": "number"
+              },
+              {
+                "targetField": "miss_m",
                 "destinationType": "number"
               }
             ]
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "includeByName": {
-              "e": true,
-              "n": true
-            }
           }
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "lengthm",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#FF9830"
+            "mode": "continuous-GrYlRd"
           },
-          "custom": {
-            "show": "points",
-            "pointSize": {
-              "fixed": 5
-            },
-            "axisPlacement": "auto"
-          }
+          "min": 0,
+          "max": 2,
+          "unit": "lengthm"
         },
         "overrides": []
       },
       "options": {
-        "mapping": "auto",
-        "series": [
-          {}
-        ],
-        "legend": {
-          "showLegend": false,
-          "displayMode": "list",
-          "placement": "bottom"
+        "view": {
+          "id": "coords",
+          "lat": 42.6573,
+          "lon": 23.3549,
+          "zoom": 18
         },
+        "controls": {
+          "showZoom": true,
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showScale": true,
+          "showMeasure": true
+        },
+        "basemap": {
+          "type": "esri-xyz",
+          "name": "Satellite",
+          "config": {
+            "server": "world-imagery"
+          }
+        },
+        "layers": [
+          {
+            "type": "markers",
+            "name": "Fixes",
+            "location": {
+              "mode": "coords",
+              "latitude": "lat",
+              "longitude": "lon"
+            },
+            "config": {
+              "showLegend": false,
+              "style": {
+                "size": {
+                  "fixed": 4
+                },
+                "color": {
+                  "field": "miss_m",
+                  "fixed": "#73BF69"
+                },
+                "opacity": 0.9,
+                "symbol": {
+                  "mode": "fixed",
+                  "fixed": "img/icons/marker/circle.svg"
+                }
+              }
+            },
+            "tooltip": true
+          }
+        ],
         "tooltip": {
-          "mode": "single"
+          "mode": "details"
         }
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "type": "xychart",
-      "title": "Side view: east \u00d7 up (m)",
+      "title": "Side view: east × up from origin (m)",
       "gridPos": {
         "x": 14,
         "y": 12,
@@ -667,21 +803,9 @@
             "uid": "mqtt"
           },
           "topic": "fusion/tracks"
-        },
-        {
-          "refId": "B",
-          "datasource": {
-            "type": "grafana-mqtt-datasource",
-            "uid": "mqtt"
-          },
-          "topic": "fusion/nodes"
         }
       ],
       "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
         {
           "id": "convertFieldType",
           "options": {
@@ -718,8 +842,7 @@
             "show": "points",
             "pointSize": {
               "fixed": 5
-            },
-            "axisPlacement": "auto"
+            }
           }
         },
         "overrides": []
@@ -740,9 +863,10 @@
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "type": "timeseries",
       "title": "Track altitude and speed",
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 20,
@@ -781,8 +905,9 @@
             "drawStyle": "line",
             "lineWidth": 2,
             "fillOpacity": 10,
+            "pointSize": 3,
             "showPoints": "never",
-            "spanNulls": 1000
+            "spanNulls": 3000
           }
         },
         "overrides": [
@@ -850,14 +975,247 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "type": "timeseries",
-      "title": "Raw bearings from the nodes (az, el)",
-      "description": "What each camera reports; fusion turns these into the track",
+      "title": "Confidence and uncertainty",
+      "description": "",
       "gridPos": {
         "x": 8,
         "y": 20,
         "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "mqtt"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "mqtt"
+          },
+          "topic": "fusion/tracks"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "includeByName": {
+              "Time": true,
+              "conf": true,
+              "sigma_m": true,
+              "pred_sigma_m": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 3,
+            "showPoints": "never",
+            "spanNulls": 3000
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "conf"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "confidence"
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sigma_m"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "σ now"
+              },
+              {
+                "id": "unit",
+                "value": "lengthm"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#FF9830"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pred_sigma_m"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "σ in 1 s"
+              },
+              {
+                "id": "unit",
+                "value": "lengthm"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#F2495C"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Fix miss distance by computing node",
+      "description": "How far apart the two rays pass: large means a camera's position or heading is off",
+      "gridPos": {
+        "x": 16,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "mqtt"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "mqtt"
+          },
+          "topic": "fixes/+"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "includeByName": {
+              "Time": true,
+              "miss_m": true,
+              "node": true
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "node"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "points",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "pointSize": 3,
+            "showPoints": "always",
+            "spanNulls": 3000
+          },
+          "displayName": "${__field.labels.node} ${__field.name}",
+          "unit": "lengthm"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Raw bearings from the nodes (az, el)",
+      "description": "What each camera reports, before anything is combined",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -880,9 +1238,9 @@
           "options": {
             "includeByName": {
               "Time": true,
-              "node": true,
               "az": true,
-              "el": true
+              "el": true,
+              "node": true
             }
           }
         },
@@ -901,13 +1259,16 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "degree",
-          "displayName": "${__field.labels.node} ${__field.name}",
           "custom": {
             "drawStyle": "points",
+            "lineWidth": 2,
+            "fillOpacity": 0,
             "pointSize": 3,
-            "showPoints": "always"
-          }
+            "showPoints": "always",
+            "spanNulls": 3000
+          },
+          "displayName": "${__field.labels.node} ${__field.name}",
+          "unit": "degree"
         },
         "overrides": [
           {
@@ -936,13 +1297,14 @@
       }
     },
     {
-      "id": 11,
+      "id": 14,
       "type": "timeseries",
       "title": "Node health: fps and SoC temperature",
+      "description": "",
       "gridPos": {
-        "x": 16,
-        "y": 20,
-        "w": 8,
+        "x": 12,
+        "y": 28,
+        "w": 12,
         "h": 8
       },
       "datasource": {
@@ -965,9 +1327,9 @@
           "options": {
             "includeByName": {
               "Time": true,
-              "node": true,
               "fps": true,
-              "temp_c": true
+              "temp_c": true,
+              "node": true
             }
           }
         },
@@ -986,13 +1348,15 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "displayName": "${__field.labels.node} ${__field.name}",
           "custom": {
             "drawStyle": "line",
             "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 3,
             "showPoints": "never",
             "spanNulls": 3000
-          }
+          },
+          "displayName": "${__field.labels.node} ${__field.name}"
         },
         "overrides": [
           {
