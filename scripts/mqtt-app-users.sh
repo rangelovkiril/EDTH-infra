@@ -22,6 +22,11 @@ write_secret() {
     | sops encrypt --filename-override "$path" /dev/stdin > "$path"
 }
 
+list_in_kustomization() {
+  local dir=$1 file=$2
+  grep -q "^  - ${file}$" "$dir/kustomization.yaml" || sed -i "/^resources:/a\\  - ${file}" "$dir/kustomization.yaml"
+}
+
 grafana_password=$(new_password)
 fusion_password=$(new_password)
 
@@ -32,6 +37,9 @@ write_secret apps/grafana/grafana-mqtt.sops.yaml grafana grafana-mqtt \
 write_secret apps/miget/fusion-mqtt.sops.yaml miget fusion-mqtt \
   --from-literal=MQTT_USERNAME=fusion \
   --from-file=MQTT_PASSWORD=<(printf %s "$fusion_password")
+
+list_in_kustomization apps/grafana grafana-mqtt.sops.yaml
+list_in_kustomization apps/miget fusion-mqtt.sops.yaml
 
 echo "users.csv now has: $(sops decrypt --extract '["data"]["users.csv"]' "$users_file" | base64 -d | cut -d, -f1 | paste -sd' ')"
 echo "wrote apps/grafana/grafana-mqtt.sops.yaml and apps/miget/fusion-mqtt.sops.yaml"

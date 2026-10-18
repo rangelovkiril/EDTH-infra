@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fusion
+  namespace: miget
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fusion
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fusion
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: fusion
+          image: ghcr.io/rangelovkiril/edth-fusion:sha-13779be
+          command: ["python", "-m", "src"]
+          env:
+            - name: MQTT_HOST
+              value: emqx.rangelov.dev
+            - name: MQTT_CLIENT_ID
+              value: fusion
+          envFrom:
+            - secretRef:
+                name: fusion-mqtt
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
