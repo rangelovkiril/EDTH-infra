@@ -502,31 +502,19 @@
     {
       "id": 15,
       "type": "text",
-      "title": "Camera rpi-1, detections drawn on (video relay, ~4 fps)",
+      "title": "Camera $camera, detections drawn on (~4 fps)",
       "gridPos": {
         "x": 0,
         "y": 4,
         "w": 12,
         "h": 10
       },
+      "repeat": "camera",
+      "repeatDirection": "h",
+      "maxPerRow": 3,
       "options": {
         "mode": "html",
-        "content": "<div style=\"height:100%;display:flex;align-items:center;justify-content:center;background:#000\"><img src=\"https://video.rangelov.dev/view/rpi-1\" alt=\"rpi-1: no video yet\" style=\"max-width:100%;max-height:100%;object-fit:contain\"></div>"
-      }
-    },
-    {
-      "id": 16,
-      "type": "text",
-      "title": "Camera rpi-2, detections drawn on (video relay, ~4 fps)",
-      "gridPos": {
-        "x": 12,
-        "y": 4,
-        "w": 12,
-        "h": 10
-      },
-      "options": {
-        "mode": "html",
-        "content": "<div style=\"height:100%;display:flex;align-items:center;justify-content:center;background:#000\"><img src=\"https://video.rangelov.dev/view/rpi-2\" alt=\"rpi-2: no video yet\" style=\"max-width:100%;max-height:100%;object-fit:contain\"></div>"
+        "content": "<div style=\"height:100%;display:flex;align-items:center;justify-content:center;background:#000\"><img src=\"https://video.rangelov.dev/view/$camera\" alt=\"$camera: no video\" style=\"max-width:100%;max-height:100%;object-fit:contain\"></div>"
       }
     },
     {
@@ -1428,5 +1416,27 @@
         }
       }
     }
-  ]
+  ],
+  "templating": {
+    "list": [
+      {
+        "type": "custom",
+        "name": "camera",
+        "label": "Cameras",
+        "query": "rpi-1,rpi-2,rpi-3",
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": []
+      }
+    ]
+  }
 }
