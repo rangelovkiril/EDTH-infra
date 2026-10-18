@@ -17,6 +17,8 @@ spec:
       org_role: Viewer
     users:
       default_theme: dark
+    panels:
+      disable_sanitize_html: "true"
   deployment:
     spec:
       template:

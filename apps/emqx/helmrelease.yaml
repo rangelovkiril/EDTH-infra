@@ -36,6 +36,9 @@ spec:
       - name: rules
         configMap:
           name: emqx-rules
+      - name: acl
+        configMap:
+          name: emqx-acl
     extraVolumeMounts:
       - name: users
         mountPath: /opt/emqx/users
@@ -46,6 +49,10 @@ spec:
       - name: rules
         mountPath: /opt/emqx/etc/base.hocon
         subPath: base.hocon
+        readOnly: true
+      - name: acl
+        mountPath: /opt/emqx/etc/acl.conf
+        subPath: acl.conf
         readOnly: true
     resources:
       requests:

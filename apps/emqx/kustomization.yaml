@@ -16,5 +16,9 @@ configMapGenerator:
     namespace: emqx
     files:
       - base.hocon
+  - name: emqx-acl
+    namespace: emqx
+    files:
+      - acl.conf
 generatorOptions:
   disableNameSuffixHash: true

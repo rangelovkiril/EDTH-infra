@@ -2,6 +2,7 @@ import asyncio
 import base64
 import hashlib
 import hmac
+import json
 import logging
 import os
 import re
@@ -14,6 +15,8 @@ BROKER_TLS = os.environ.get("BROKER_TLS", "1") != "0"
 BROKER_TLS_NAME = os.environ.get("BROKER_TLS_NAME", "emqx.rangelov.dev")
 VIEW_FPS = float(os.environ.get("VIEW_FPS", "10"))
 PORT = int(os.environ.get("PORT", "8080"))
+NODE_USER = os.environ.get("NODE_USER", "node")
+ACTIVE_S = 15
 PUSH_TOKENS = dict(
     pair.split(":", 1) for pair in os.environ.get("PUSH_TOKENS", "").split(",") if ":" in pair
 )
@@ -117,7 +120,7 @@ async def authorised(node: str, auth: str) -> bool:
         return token_matches(node, auth[7:].strip())
     if auth.lower().startswith("basic "):
         user, _, password = base64.b64decode(auth[6:]).decode(errors="replace").partition(":")
-        return user == node and await broker_accepts(user, password)
+        return user in (node, NODE_USER) and await broker_accepts(user, password)
     return False
 
 
@@ -176,17 +179,47 @@ async def view(node: str, writer) -> None:
         await asyncio.sleep(1 / VIEW_FPS)
 
 
-def index() -> bytes:
+def active_nodes() -> list[dict]:
     now = time.time()
-    tiles = "".join(
-        f'<figure><img src="/view/{n}"><figcaption>{n} · {now - t:.0f} s ago</figcaption></figure>'
+    return [
+        {"node": n, "age_s": round(now - t, 1)}
         for n, (_, _, t) in sorted(frames.items())
-    ) or "<p>No node is pushing video.</p>"
-    return (
-        "<!doctype html><meta charset=utf-8><title>EDTH video</title><style>"
-        "body{background:#111;color:#ccc;font:14px sans-serif;display:flex;flex-wrap:wrap;gap:12px}"
-        "img{max-width:640px;display:block}</style>" + tiles
-    ).encode()
+        if now - t < ACTIVE_S
+    ]
+
+
+PAGE = """<!doctype html><meta charset=utf-8><title>EDTH cameras</title><style>
+html,body{margin:0;height:100%;background:#111;color:#bbb;font:13px sans-serif}
+#grid{display:grid;gap:6px;height:100%;padding:6px;box-sizing:border-box}
+figure{margin:0;position:relative;display:flex;align-items:center;justify-content:center;
+background:#000;min-height:0}
+img{max-width:100%;max-height:100%;object-fit:contain}
+figcaption{position:absolute;left:6px;top:4px;background:#000a;padding:2px 6px;border-radius:3px}
+p{margin:auto;align-self:center;text-align:center}
+</style><div id=grid></div><script>
+const grid = document.getElementById("grid");
+async function refresh() {
+  let nodes = [];
+  try { nodes = await (await fetch("nodes.json", {cache: "no-store"})).json(); } catch (e) {}
+  const want = nodes.map(n => n.node);
+  for (const fig of [...grid.querySelectorAll("figure")]) {
+    if (!want.includes(fig.dataset.node)) fig.remove();
+  }
+  for (const n of want) {
+    if (!grid.querySelector(`figure[data-node="${n}"]`)) {
+      const fig = document.createElement("figure");
+      fig.dataset.node = n;
+      fig.innerHTML = `<img src="view/${n}"><figcaption>${n}</figcaption>`;
+      grid.appendChild(fig);
+    }
+  }
+  const empty = grid.querySelector("p");
+  if (!want.length && !empty) grid.innerHTML = "<p>No camera is sending video.</p>";
+  if (want.length && empty) empty.remove();
+  grid.style.gridTemplateColumns = `repeat(${Math.min(Math.max(want.length, 1), 3)}, 1fr)`;
+}
+refresh(); setInterval(refresh, 3000);
+</script>"""
 
 
 async def handle(reader, writer) -> None:
@@ -214,8 +247,11 @@ async def handle(reader, writer) -> None:
                 await view(node, writer)
         elif method == "GET" and parts == ["healthz"]:
             await respond(writer, "200 OK", "text/plain", b"ok\n")
+        elif method == "GET" and parts == ["nodes.json"]:
+            body = json.dumps(active_nodes()).encode()
+            await respond(writer, "200 OK", "application/json", body)
         elif method == "GET" and parts == [""]:
-            await respond(writer, "200 OK", "text/html; charset=utf-8", index())
+            await respond(writer, "200 OK", "text/html; charset=utf-8", PAGE.encode())
         else:
             await respond(writer, "404 Not Found", "text/plain", b"not found\n")
     except (ConnectionError, ValueError, asyncio.IncompleteReadError):
